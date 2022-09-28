@@ -8,7 +8,8 @@ DocStrings: NumpyStyle
 """
 
 class GridWorldEnv():
-    """Grid-World Environment Class"""
+    """Grid-World EnvironmentClass
+    """
     def __init__(self, gridsize=7, startState='00', terminalStates=['64'], ditches=['52'], ditchPenalty=-10, turnPenalty=-1, winReward=100, mode='prod'):
         """Initialize an instance of Grid-World environment 
         
@@ -42,21 +43,21 @@ class GridWorldEnv():
         ----------
         env = GridWorldEnv(mode='debug')
         """
-        self.mode=mode
-        self.gridsize=min(gridsize,9)
+        self.mode = mode
+        self.gridsize = min(gridsize, 9)
         self.create_statespace()
-        self.actionspace=[0, 1, 2, 3]
-        self.actionDict = {0:'UP', 1:'DONW', 2:'LEFT', 3:'RIGHT'}
-        self.startState=startState
-        self.terminalStates=terminalStates
-        self.ditches=ditches
-        self.winReward=winReward
-        self.ditchPenalty=ditchPenalty
-        self.turnPenalty=turnPenalty
-        self.stateCount=self.get_statespace_len()
-        self.actionCount=self.get_actionspace_len()
-        self.stateDict={k:v for k, v in zip(self.statespace,range(self.stateCount))}
-        self.currentState=self.startState
+        self.actionspace = [0, 1, 2, 3]
+        self.actionDict = {0: 'UP', 1: 'DOWN', 2: 'LEFT', 3: 'RIGHT'}
+        self.startState = startState
+        self.terminalStates = terminalStates
+        self.ditches = ditches
+        self.winReward = winReward
+        self.ditchPenalty = ditchPenalty
+        self.turnPenalty = turnPenalty
+        self.stateCount = self.get_statespace_len()
+        self.actionCount = self.get_actionspace_len()
+        self.stateDict = {k: v for k, v in zip(self.statespace, range(self.stateCount))}
+        self.currentState = self.startState
 
         if self.mode == 'debug':
             print("State Space", self.statespace)
@@ -69,17 +70,17 @@ class GridWorldEnv():
 
     def create_statespace(self):
         """Create Statespace
-        
-            Makes the grid world space with as many grid-cells as requested during 
-            instantiation gridsize parameter.
+    
+        Makes the grid world space with as many grid-cells as requested during 
+        instantiation gridsize parameter.
         """
         self.statespace=[]
         for row in range(self.gridsize):
             for col in range(self.gridsize):
-                self.statespace.append(str(row)+str(col))
+                self.statespace.append(str(row) + str(col))
 
-    def set_mode(self,mode):
-        self.mode=mode
+    def set_mode(self, mode):
+        self.mode = mode
 
     def get_statespace(self):
         return self.statespace
@@ -91,10 +92,10 @@ class GridWorldEnv():
         return self.actionDict
 
     def get_statespace_len(self):
-        return(len(self.statespace))
+        return len(self.statespace)
 
     def get_actionspace_len(self):
-        return(len(self.actionspace))
+        return len(self.actionspace)
 
     def next_state(self, current_state, action):
         """Next State
@@ -114,9 +115,8 @@ class GridWorldEnv():
         str
             New state coded as str of coordinates
         """
-
-        s_row=int(current_state[0])
-        s_col=int(current_state[1])
+        s_row = int(current_state[0])
+        s_col = int(current_state[1])
         next_row = s_row
         next_col = s_col
         if action == 0: next_row = max(0, s_row - 1)
@@ -124,15 +124,14 @@ class GridWorldEnv():
         if action == 2: next_col = max(0, s_col - 1)
         if action == 3: next_col = min(self.gridsize - 1, s_col + 1)
 
-        new_state=str(next_row)+str(next_col)
+        new_state = str(next_row) + str(next_col)
         if new_state in self.statespace:
             if new_state in self.terminalStates: self.isGameEnd = True
-            if self.mode == 'debug':
+            if self.mode=='debug':
                 print("CurrentState:{}, Action:{}, NextState:{}".format(current_state, action, new_state))
             return new_state
-        else:
+        else: 
             return current_state
-            
     def compute_reward(self, state):
         """Compute Reward
             Computes the reward for arriving at a given state based on ditches, and
@@ -152,7 +151,7 @@ class GridWorldEnv():
         if state in self.ditches: reward += self.ditchPenalty
         if state in self.terminalStates: reward += self.winReward
         return reward
-
+    
     def reset(self):
         """Resets the environment. 
             Required in gym standard format
@@ -173,7 +172,7 @@ class GridWorldEnv():
         self.currentState=self.startState
         return self.currentState
 
-    def step(self,action):
+    def step(self, action):
         """step
 
             Takes a step corresponding to the action suggested. Required in gym standard format
@@ -193,25 +192,23 @@ class GridWorldEnv():
         observation_tuple=env.step(1)
         next_state, reward, done, _ =env.step(2)
         """
-
         if self.isGameEnd:
-            raise("Game is Over Exception")
+            raise('Game is Over Exception')
         if action not in self.actionspace:
-            raise("Invalid Action Exception")
-        self.currentState=self.next_state(self.currentState, action)
+            raise('Invalid Action Exception')
+        self.currentState = self.next_state(self.currentState, action)
         obs = self.currentState
         reward = self.compute_reward(obs)
         done = self.isGameEnd
-        self.totalTurns +=1
+        self.totalTurns += 1
         if self.mode == 'debug':
-            print("Obs:{}, Reward:{}, Done:{}, TotalTurns:{}".format(obs, reward, done, self.totalTurns))
+            print("Obs: {}, Reward: {}, Done: {}, TotalTurns: {}".format(obs, reward, done, self.totalTurns))
         return obs, reward, done, self.totalTurns
 
-if __name__=='__main__':
+if __name__ == '__main__':
     """Main function
     Mainfunction to test the code and show an example
     """
-
     env = GridWorldEnv(mode='debug')
     # env = GridWorldEnv()
     print("Resetting Env...")
@@ -224,3 +221,7 @@ if __name__=='__main__':
     env.step(2)
     print("Go UP")
     env.step(0)
+    # opt_pol = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,3,3,3,3,1,2,2]
+    # for act in opt_pol: 
+    #     env.step(act)
+    
