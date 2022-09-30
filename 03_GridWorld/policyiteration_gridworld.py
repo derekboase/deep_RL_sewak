@@ -171,6 +171,7 @@ if __name__ == '__main__':
     """Main function
     Main function to test the code and show an example.
     """
+    
     print("Initializing variables and setting environment...")
     policyIteration = PolicyIteration(env=GridWorldEnv(), mode='debug')
     print('Policy Evaluation Score = ', policyIteration.solve_mdp())
